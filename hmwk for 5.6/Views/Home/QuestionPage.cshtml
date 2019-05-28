@@ -1,0 +1,61 @@
+﻿@using Data
+@model QuestionPageViewModel
+
+@{
+    ViewData["Title"] = "QuestionPage";
+}
+<div>
+
+    <h2>@Model.Question.Title</h2>
+    <br />
+    <p>@Model.Question.Text</p>
+    <br />
+
+        @foreach (Tag t in Model.Tags)
+        {
+            <h4>@t.Name</h4>
+        }
+
+
+    <br />
+    <h2>This question got @Model.Question.Likes.Count likes</h2>
+    <br />
+    <br />
+    <h1>Answers:</h1>
+    @foreach (Answer a in Model.Answers)
+    {
+        <p>@a.Text</p>
+    }
+
+    <br />
+    @if (Model.IsLoggedIn && Model.DidntLikeYet)
+    {
+        <form method="post" action="/home/addlike">
+            <button>Like</button>
+            <input type="hidden" name="questionId" value="@Model.Question.Id" />
+            <input type="hidden" name="userId" value="@Model.User.Id" />
+        </form>
+    }
+    else
+    {
+        <button disabled="disabled">Like</button>
+    }
+
+    @if (Model.IsLoggedIn)
+    {
+        <form method="post" action="/home/addanswer?questionid=@Model.Question.Id">
+            <input type="hidden" name="userid" value="@Model.User.Id" />
+            <textarea class="form-control" rows="6" name="text" placeholder="Answer This Question"></textarea>
+
+            <button class="btn-success">Answer</button>
+        </form>
+    }
+    else
+    {
+        <input type="text" disabled="disabled" name="answer" placeholder="Answer This Question" />
+    }
+
+
+
+
+</div>

@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewData["Title"] = "AskQuestion";
+}
+
+<h2>Ask A Question</h2>
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <form method="post" action="/home/submitquestion">
+            <input class="form-control" type="text" name="title" placeholder="Title" />
+            <textarea class="form-control" type="text" name="text" rows="6" placeholder="Type your Question"></textarea>
+            <select multiple class="form-control" id="tags" name="tags"></select>
+
+            <button class="btn-primary">Submit Question</button>
+        </form>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js"></script>
+    <script>
+        $(() => {
+            $("#tags").tagsinput();
+        })</script>
+}
+@section styles
+    {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css" />
+}

@@ -14,6 +14,8 @@ namespace hmwk_for_5._6
 {
     public class Startup
     {
+        public const string CookieScheme = "Account";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,6 +32,14 @@ namespace hmwk_for_5._6
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            services.AddAuthentication(CookieScheme)
+               .AddCookie(CookieScheme, options =>
+               {
+                   options.AccessDeniedPath = "/account/denied";
+                   options.LoginPath = "/account/login";
+               });
+            services.AddSession();
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -49,8 +59,9 @@ namespace hmwk_for_5._6
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

@@ -5,39 +5,84 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using hmwk_for_5._6.Models;
+using Microsoft.Extensions.Configuration;
+using Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace hmwk_for_5._6.Controllers
 {
     public class HomeController : Controller
     {
+        private string _conn;
+        public HomeController(IConfiguration configuration)
+        {
+            _conn = configuration.GetConnectionString("ConStr");
+        }
+
         public IActionResult Index()
         {
-            return View();
+            var repository = new QuestionsRepository(_conn);
+            return View(repository.GetQuestions());
         }
 
-        public IActionResult About()
+        public IActionResult QuestionPage(int id)
         {
-            ViewData["Message"] = "Your application description page.";
+            var repository = new QuestionsRepository(_conn);
 
-            return View();
+            var vm = new QuestionPageViewModel();
+
+            vm.Question = repository.GetQuestionById(id);
+            vm.Tags = repository.GetTagsByQuestion(vm.Question.QuestionsTags);
+            vm.Answers = repository.GetAnswersByQuestionId(id);
+            vm.IsLoggedIn = User.Identity.IsAuthenticated;
+            if (User.Identity.IsAuthenticated)
+            {
+                vm.User = repository.GetUserByEmail(User.Identity.Name);
+                vm.DidntLikeYet = repository.DidntLikeYet(id, vm.User.Id);
+            }
+            
+
+            return View(vm);
         }
 
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
+        [Authorize]
+        public IActionResult AskQuestion()
         {
             return View();
+            //var repository = new QuestionsRepository(_conn);
+            //if (User.Identity.IsAuthenticated)
+            //{
+            //    return View();
+            //}
+            //else
+            //{
+            //    return Redirect("/account/login");
+            //}
+
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpPost]
+        public IActionResult SubmitQuestion(Question q, IEnumerable<string> tags)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var repository = new QuestionsRepository(_conn);
+            repository.AddQuestion(q, tags);
+            return Redirect("/home/index");
+        }
+
+        [HttpPost]
+        public IActionResult AddLike(int questionId, int userId)
+        {
+            var repository = new QuestionsRepository(_conn);
+            repository.AddLike(questionId, userId);
+            return Redirect($"/home/questionpage?id={questionId}");
+        }
+
+        [HttpPost]
+        public IActionResult AddAnswer(Answer answer)
+        {
+            var repository = new QuestionsRepository(_conn);
+            repository.AddAnswer(answer);
+            return Redirect($"/home/questionpage?id={answer.Id}");
         }
     }
 }

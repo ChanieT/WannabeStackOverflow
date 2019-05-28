@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - hmwk_for_5._6</title>
+    <title>@ViewData["Title"] Wannabe Stack Overflow</title>
+    @RenderSection("styles", false)
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -26,13 +27,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">hmwk_for_5._6</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Wannabe Stack Overflow</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="AskQuestion">Ask A Question</a></li>
+                    <li><a asp-area="" asp-controller="Account" asp-action="SignUp">Sign Up</a></li>
+                    <li><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
+
                 </ul>
             </div>
         </div>
@@ -43,9 +46,7 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
-        <footer>
-            <p>&copy; 2019 - hmwk_for_5._6</p>
-        </footer>
+
     </div>
 
     <environment include="Development">
