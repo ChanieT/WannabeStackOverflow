@@ -70,11 +70,14 @@ namespace hmwk_for_5._6.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddLike(int questionId, int userId)
+        public IActionResult AddLike(int questionId)
         {
             var repository = new QuestionsRepository(_conn);
-            repository.AddLike(questionId, userId);
+            var u=repository.GetUserByEmail(User.Identity.Name);
+            repository.AddLike(questionId, u);
             return Redirect($"/home/questionpage?id={questionId}");
+
+           
         }
 
         [HttpPost]
@@ -84,5 +87,11 @@ namespace hmwk_for_5._6.Controllers
             repository.AddAnswer(answer);
             return Redirect($"/home/questionpage?id={answer.Id}");
         }
+
+        
     }
+
+    
 }
+
+

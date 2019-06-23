@@ -172,7 +172,8 @@ namespace Data
         {
             using (var context = new QuestionsTagsContext(_conn))
             {
-                return context.Users.FirstOrDefault(u => u.Email == email);
+                var user= context.Users.FirstOrDefault(u => u.Email == email);
+                return user;
             }
         }
 
@@ -241,16 +242,17 @@ namespace Data
             }
         }
 
-        public void AddLike(int userId, int questionId)
+        public void AddLike(int questionId, User u)
         {
             using (var context = new QuestionsTagsContext(_conn))
             {
+                var user = GetUser(u);
                 Likes like = new Likes
                 {
-                    UserId = userId,
-                    User = context.Users.FirstOrDefault(u => u.Id == userId),
+                    UserId = user.Id,
+                    //User = user,
                     QuestionId = questionId,
-                    Question = context.Questions.FirstOrDefault(q => q.Id == questionId)
+                    //Question = context.Questions.FirstOrDefault(q => q.Id == questionId)
                 };
                 context.Likes.Add(like);
 
